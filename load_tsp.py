@@ -3,7 +3,7 @@ import os
 import numpy as np
 
 
-def LoadTsp(path="./"):
+def LoadTsp(path="./tsp_data"):
     '''
     Input: path to tsp datas
     Output: list of 2D numpy array
@@ -17,4 +17,4 @@ def LoadTsp(path="./"):
 
 
 if __name__ == "__main__":
-    print(LoadTsp(path="./tsp_data"))
+    pass
