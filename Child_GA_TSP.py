@@ -1,19 +1,29 @@
+from typing import Container
 import numpy as np
 np.random.seed(0)
 
 
-def Child_GA(Pc=0.5, Pm=0.01, NUM_CHROME=20, Optimal_sol=26, TSP_graph=[[0, 12, 1, 100],
-                                                                        [12, 0,
-                                                                         2, 3],
-                                                                        [1, 2,
-                                                                         0, 10],
-                                                                        [100, 3, 10, 0]]):
+class MEMORY():
+    def __init__(self, capacity) -> None:
+        self.container = list()
+        self.capacity = capacity
+
+    def add(self, value):
+        while len(self.container) >= self.capacity:
+            self.container.pop(0)
+        self.container.append(value)
+
+    def get(self):
+        return (sum(self.container) / len(self.container)) if len(self.container) else 0
+
+
+def Child_GA(Pc, Pm, NUM_CHROME, TSP_graph):
     NUM_BIT = len(TSP_graph) - 1
     NUM_PARENT = NUM_CHROME
     NUM_CROSSOVER = max(int(Pc * NUM_CHROME / 2), 1)
     NUM_CROSSOVER_2 = NUM_CROSSOVER*2
     NUM_MUTATION = int(Pm * NUM_CHROME * NUM_BIT)
-    MAX_NUM_ITERATION = 3000
+    MAX_NUM_ITERATION = 30000
 
     def initPop():
         p = []
@@ -84,7 +94,7 @@ def Child_GA(Pc=0.5, Pm=0.01, NUM_CHROME=20, Optimal_sol=26, TSP_graph=[[0, 12, 
 
     pop = initPop()
     pop_fit = evaluatePop(pop)
-    best_so_far = 2**64
+    memory = MEMORY(capacity=len(TSP_graph)**2)
 
     for i in range(1, MAX_NUM_ITERATION+1):
         parent = selection(pop, pop_fit)
@@ -92,11 +102,13 @@ def Child_GA(Pc=0.5, Pm=0.01, NUM_CHROME=20, Optimal_sol=26, TSP_graph=[[0, 12, 
         mutation(offspring)
         offspring_fit = evaluatePop(offspring)
         pop, pop_fit = replace(pop, pop_fit, offspring, offspring_fit)
-        best_current_iteration = -np.max(pop_fit)
+        mean = -1 * np.average(pop_fit)
+        if abs(mean - memory.get()) == 0:
+            return i
+        memory.add(mean)
 
     return 2*MAX_NUM_ITERATION
 
 
 if __name__ == "__main__":
-    in_ = np.random.randint(1, 100, size=(20, 20))
-    print(Child_GA(NUM_CHROME=30, TSP_graph=in_))
+    pass

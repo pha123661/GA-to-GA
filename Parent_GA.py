@@ -3,35 +3,35 @@ import numpy as np
 import multiprocessing as mp
 import random
 from Child_GA_TSP import Child_GA
+from load_tsp import LoadTsp
 np.random.seed(0)
 random.seed(0)
 
 
 class Parent_GA():
-    def __init__(self, Manager, NUM_ITERATION=10, NUM_CHROME=20, NUM_BIT=19, Pc=0.5, Pm=0.01, PENALTY=1024):
-        # Field of chromosome
-        # [0:6]: self.Pc, [7:13]: self.Pm*100, [14:18]: self.NUM_CHROME,
+    def __init__(self, NUM_ITERATION=10, NUM_CHROME=20, Pc=0.5, Pm=0.01):
+        '''
+        Field of chromosome
+        [0:6]: self.Pc, [7:13]: self.Pm*100, [14:18]: self.NUM_CHROME
+        '''
         self.NUM_ITERATION = NUM_ITERATION
         self.NUM_CHROME = NUM_CHROME
-        self.NUM_BIT = NUM_BIT
-        self.PENALTY = PENALTY
+        self.NUM_BIT = 19
 
         self.NUM_PARENT = NUM_CHROME
         self.NUM_CROSSOVER = int(Pc * NUM_CHROME / 2)
-        self.NUM_MUTATION = int(Pm * NUM_CHROME * NUM_BIT)
+        self.NUM_MUTATION = int(Pm * NUM_CHROME * self.NUM_BIT)
 
-        self.cache = Manager.dict()
-        self.TSP_maps = [
-            tuple(tuple(x)
-                  for x in np.random.randint(1, 100, size=(14, 14)).tolist()),
-            tuple(tuple(x)
-                  for x in np.random.randint(200, 301, size=(14, 14)).tolist())
-        ]
+        self.TSP_maps = LoadTsp()
 
     def __initPop(self):
         return np.random.randint(2, size=(self.NUM_CHROME, self.NUM_BIT))
 
     def __Decode(self, x):
+        '''
+        Input: chromosome(type=bitstring)
+        Output: decoded hyper parameters
+        '''
         def BitList2Int(BitList):
             out = 0
             for bit in BitList:
@@ -42,31 +42,25 @@ class Parent_GA():
         chrome = x[14:18]
 
         Pc = BitList2Int(Pc)
-        Pc = 0.6 + (1-0.6) * (Pc/128)
+        Pc = 0.6 + (1-0.6) * (Pc/128)  # 0.6 <= Pc <= 1
         Pm = BitList2Int(Pm)
-        Pm = 0 + (0.01-0) * (Pm/128)
+        Pm = 0 + (0.01-0) * (Pm/128)  # 0 <= Pm <= 0.01
         chrome = BitList2Int(chrome)
-        chrome = int(20 + (30-20) * (chrome/32))
+        chrome = int(20 + (30-20) * (chrome/32))  # 20 <= chrome <= 30
 
         return Pc, Pm, chrome
 
     def fitFunc(self, x):
-        map = random.choice(self.TSP_maps)
+        '''
+        Definition of fitness function:
+        1 / (average of iterations for each map)
+        '''
         Pc, Pm, chrome = self.__Decode(x)
-        key = (Pc, Pm, chrome, map)
-        if key in self.cache:
-            return self.cache[key]
-        Num_penalty = 0
-        if Pc < 0.6 or Pc > 1:
-            Num_penalty += 1
-        if Pm > 0.01:
-            Num_penalty += 1
-        if chrome > 30 or chrome < 20:
-            Num_penalty += 1
-        fit_value = 1 / \
-            float(Child_GA(Pc=Pc, Pm=Pm, NUM_CHROME=chrome, TSP_graph=map) +
-                  Num_penalty*self.PENALTY)
-        self.cache[key] = fit_value
+        sum_ = 0
+        for graph in self.TSP_maps:
+            sum_ += float(Child_GA(Pc=Pc, Pm=Pm,
+                                   NUM_CHROME=chrome, TSP_graph=graph))
+        fit_value = len(self.TSP_maps) / sum_
         return fit_value
 
     def __evaluatePop(self, P):
@@ -74,6 +68,9 @@ class Parent_GA():
             return pool.map(self.fitFunc, P)
 
     def __selection(self, p, p_fit):
+        '''
+        TODO: Need new selection algorithm
+        '''
         a = []
         for _ in range(self.NUM_PARENT):
             [j, k] = np.random.choice(self.NUM_CHROME, 2, replace=False)
@@ -84,6 +81,9 @@ class Parent_GA():
         return a
 
     def __crossover(self, p):
+        '''
+        TODO: Need new crossover methods
+        '''
         a = []
         for _ in range(self.NUM_CROSSOVER):
             c = np.random.randint(1, self.NUM_BIT)
@@ -116,7 +116,7 @@ class Parent_GA():
         pop_fit = self.__evaluatePop(pop)
         mean_outputs = [np.average([int(1/p) for p in pop_fit])]
         best_outputs = [np.max([int(1/p) for p in pop_fit])]
-        for _ in range(self.NUM_ITERATION):
+        for i in range(self.NUM_ITERATION):
             parent = self.__selection(pop, pop_fit)
             offspring = self.__crossover(parent)
             self.__mutation(offspring)
@@ -125,7 +125,9 @@ class Parent_GA():
                 pop, pop_fit, offspring, offspring_fit)
             mean_outputs.append(np.average([int(1/p) for p in pop_fit]))
             best_outputs.append(np.max([int(1/p) for p in pop_fit]))
-            print([int(1/p) for p in pop_fit])
+            print("iteration: ", i,
+                  "Pc: %s, Pm: %s, NUM_CHROME: %s" % (self.__Decode(pop[0])),
+                  "Average iteration: ", int(1/pop_fit[0]))
         if plot:
             outputs = [mean_outputs]
             self.plot(outputs)
@@ -135,11 +137,16 @@ class Parent_GA():
     def plot(self, outputs):
         for output in outputs:
             plt.plot(output)
-        plt.xlabel("Iteration")
+        plt.xlabel("Average iteration for every map")
         plt.ylabel("Fitness")
         plt.show()
 
 
 if __name__ == "__main__":
-    a = Parent_GA(Manager=mp.Manager())
+    a = Parent_GA(
+        NUM_ITERATION=10,
+        NUM_CHROME=20,
+        Pc=0.5,
+        Pm=0.01
+    )
     a.Eval(plot=True)
