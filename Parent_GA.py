@@ -125,7 +125,7 @@ class Parent_GA():
                 pop, pop_fit, offspring, offspring_fit)
             mean_outputs.append(np.average([int(1/p) for p in pop_fit]))
             best_outputs.append(np.max([int(1/p) for p in pop_fit]))
-            print("iteration: ", i,
+            print("iteration:", i,
                   "Pc: %s, Pm: %s, NUM_CHROME: %s" % (self.__Decode(pop[0])),
                   "Average iteration: ", int(1/pop_fit[0]))
         if plot:
