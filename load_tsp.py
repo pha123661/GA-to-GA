@@ -1,6 +1,5 @@
 import pickle
 import os
-import numpy as np
 
 
 def LoadTsp(path="./tsp_data"):
@@ -12,7 +11,7 @@ def LoadTsp(path="./tsp_data"):
     for filename in os.listdir(path):
         if filename.endswith(".pickle"):
             with open(os.path.join(path, filename), mode="rb") as file:
-                ret.append(np.array(pickle.load(file)))
+                ret.append(pickle.load(file))
     return ret
 
 
