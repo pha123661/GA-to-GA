@@ -129,7 +129,7 @@ class Parent_GA():
                   "Pc: %s, Pm: %s, NUM_CHROME: %s" % (self.__Decode(pop[0])),
                   "Average iteration: ", int(1/pop_fit[0]))
         if plot:
-            outputs = [mean_outputs]
+            outputs = [mean_outputs, best_outputs]
             self.plot(outputs)
         if return_fit:
             pop_fit[0]
