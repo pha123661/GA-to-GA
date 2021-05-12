@@ -79,9 +79,9 @@ def Child_GA(Pc, Pm, NUM_CHROME, TSP_graph):
     def TF(name):
         # name = Pc or Pm
         if name == "Pc":
-            return random.choices([True, False], weights=[Pc, 1-Pc])
+            return random.choices([True, False], weights=[Pc, 1-Pc])[0]
         elif name == "Pm":
-            return random.choices([True, False], weights=[Pm, 1-Pm])
+            return random.choices([True, False], weights=[Pm, 1-Pm])[0]
         else:
             raise IndexError(name, "not found")
 
