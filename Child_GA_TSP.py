@@ -1,6 +1,8 @@
 from typing import Container
 import numpy as np
+import random
 np.random.seed(0)
+random.seed(0)
 
 
 class MEMORY():
@@ -22,7 +24,6 @@ def Child_GA(Pc, Pm, NUM_CHROME, TSP_graph):
     NUM_PARENT = NUM_CHROME
     NUM_CROSSOVER = max(int(Pc * NUM_CHROME / 2), 1)
     NUM_CROSSOVER_2 = NUM_CROSSOVER*2
-    NUM_MUTATION = int(Pm * NUM_CHROME * NUM_BIT)
     MAX_NUM_ITERATION = 30000
 
     def initPop():
@@ -78,11 +79,21 @@ def Child_GA(Pc, Pm, NUM_CHROME, TSP_graph):
             a.append(child2)
         return a
 
+    def TF(name):
+        # name = Pc or Pm
+        if name == "Pc":
+            return random.choices([True, False], weights=[Pc, 1-Pc])
+        elif name == "Pm":
+            return random.choices([True, False], weights=[Pm, 1-Pm])
+        else:
+            raise IndexError(name, "not found")
+
     def mutation(p):
-        for _ in range(NUM_MUTATION):
-            row = np.random.randint(NUM_CROSSOVER_2)
-            [j, k] = np.random.choice(NUM_BIT, 2)
-            p[row][j], p[row][k] = p[row][k], p[row][j]
+        for _ in range(NUM_CHROME):
+            if TF("Pm"):
+                row = np.random.randint(NUM_CROSSOVER_2)
+                [j, k] = np.random.choice(NUM_BIT, 2)
+                p[row][j], p[row][k] = p[row][k], p[row][j]
 
     def sortChrome(a, a_fit):
         a_index = range(len(a))
