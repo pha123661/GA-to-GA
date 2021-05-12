@@ -40,14 +40,15 @@ class Parent_GA():
     def fitFunc(self, x):
         '''
         Definition of fitness function:
-        1 / (average of iterations for each map)
+        average of iterations for each map
         '''
         Pc, Pm, chrome = x
         sum_ = 0
         for graph in self.TSP_maps:
             sum_ += float(Child_GA(Pc=Pc, Pm=Pm,
                                    NUM_CHROME=chrome, TSP_graph=graph))
-        fit_value = len(self.TSP_maps) / sum_
+        fit_value = sum_ / len(self.TSP_maps)
+        # fit_value = random.randint(1, 200)
         return fit_value
 
     def evaluatePop(self, P):
@@ -59,7 +60,7 @@ class Parent_GA():
         Rank selection
         '''
         a = []
-        sorted_p = [x for _, x in sorted(zip(p_fit, p))]
+        sorted_p = [x for _, x in sorted(zip(p_fit, p), reverse=True)]
         weights = list(range(1, len(sorted_p)+1))
         for _ in range(self.NUM_PARENT):
             parent = random.choices(sorted_p, weights=weights)[0]
@@ -105,7 +106,7 @@ class Parent_GA():
         b = p + a
         b_fit = p_fit + a_fit
         ret_fit, ret = [], []
-        for t, tt in sorted(zip(b_fit, b), reverse=True):
+        for t, tt in sorted(zip(b_fit, b)):
             ret_fit.append(t)
             ret.append(tt)
         return ret[:self.NUM_CHROME], ret_fit[:self.NUM_CHROME]
@@ -113,12 +114,12 @@ class Parent_GA():
     def Eval(self, plot=False, return_fit=False):
         pop = self.initPop()
         pop_fit = self.evaluatePop(pop)
-        mean_outputs = [int(1/(sum(pop_fit)/len(pop_fit)))]
-        best_outputs = [int(1/max(pop_fit))]
+        mean_outputs = [sum(pop_fit)/len(pop_fit)]
+        best_outputs = [max(pop_fit)]
         for i in range(self.NUM_ITERATION):
             print("#################################")
             for p, f in zip(pop, pop_fit):
-                print(p, "  fit: ", int(1/f))
+                print(p, "  fit: ", f)
             parent = self.selection(pop, pop_fit)
             offspring = self.crossover(parent)
             self.mutation(offspring)
@@ -127,11 +128,10 @@ class Parent_GA():
                 pop, pop_fit, offspring, offspring_fit)
 
             print("iteration:", i,
-                  "Pc: %s, Pm: %s, NUM_CHROME: %s" % (
-                      pop[0][0], pop[0][1], pop[0][2]),
-                  "Best average iteration: ", int(1/pop_fit[0]))
-            mean_outputs.append(int(1/(sum(pop_fit)/len(pop_fit))))
-            best_outputs.append(int(1/max(pop_fit)))
+                  "Pc: %s, Pm: %s, NUM_CHROME: %s" % tuple(pop[0]),
+                  "Best average iteration: ", pop_fit[0])
+            mean_outputs.append(sum(pop_fit)/len(pop_fit))
+            best_outputs.append(min(pop_fit))
         if plot:
             outputs = [mean_outputs, best_outputs]
             self.plot(outputs)
@@ -150,7 +150,7 @@ if __name__ == "__main__":
     a = Parent_GA(
         NUM_ITERATION=10,
         NUM_CHROME=12,
-        Pc=0.5,
-        Pm=1
+        Pc=0.8,
+        Pm=0.01
     )
     a.Eval(plot=True)
