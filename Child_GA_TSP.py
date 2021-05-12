@@ -53,6 +53,9 @@ def Child_GA(Pc, Pm, NUM_CHROME, TSP_graph):
         return a
 
     def crossover_uniform(p):
+        '''
+        TODO: cx2 crossover method
+        '''
         a = []
         for _ in range(NUM_CROSSOVER):
             mask = np.random.randint(2, size=NUM_BIT)

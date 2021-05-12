@@ -7,6 +7,10 @@ from load_tsp import LoadTsp
 np.random.seed(0)
 random.seed(0)
 
+"""
+TODO: Value encode
+"""
+
 
 class Parent_GA():
     def __init__(self, NUM_ITERATION=10, NUM_CHROME=20, Pc=0.5, Pm=0.01):
@@ -42,11 +46,11 @@ class Parent_GA():
         chrome = x[14:18]
 
         Pc = BitList2Int(Pc)
-        Pc = 0.6 + (1-0.6) * (Pc/128)  # 0.6 <= Pc <= 1
+        Pc = 0.0 + (1-0.0) * (Pc/128)
         Pm = BitList2Int(Pm)
-        Pm = 0 + (0.01-0) * (Pm/128)  # 0 <= Pm <= 0.01
+        Pm = 0.1 + (0.2-0.1) * (Pm/128)
         chrome = BitList2Int(chrome)
-        chrome = int(20 + (30-20) * (chrome/32))  # 20 <= chrome <= 30
+        chrome = int(20 + (70-20) * (chrome/32))
 
         return Pc, Pm, chrome
 
@@ -69,7 +73,7 @@ class Parent_GA():
 
     def __selection(self, p, p_fit):
         '''
-        TODO: Need new selection algorithm
+        TODO: Rank selection
         '''
         a = []
         for _ in range(self.NUM_PARENT):
@@ -82,7 +86,7 @@ class Parent_GA():
 
     def __crossover(self, p):
         '''
-        TODO: Need new crossover methods
+        TODO: Single point crossover
         '''
         a = []
         for _ in range(self.NUM_CROSSOVER):
@@ -124,7 +128,7 @@ class Parent_GA():
             pop, pop_fit = self.__replace(
                 pop, pop_fit, offspring, offspring_fit)
             mean_outputs.append(np.average([int(1/p) for p in pop_fit]))
-            best_outputs.append(np.max([int(1/p) for p in pop_fit]))
+            best_outputs.append(np.min([int(1/p) for p in pop_fit]))
             print("iteration:", i,
                   "Pc: %s, Pm: %s, NUM_CHROME: %s" % (self.__Decode(pop[0])),
                   "Average iteration: ", int(1/pop_fit[0]))
@@ -145,7 +149,7 @@ class Parent_GA():
 if __name__ == "__main__":
     a = Parent_GA(
         NUM_ITERATION=10,
-        NUM_CHROME=20,
+        NUM_CHROME=12,
         Pc=0.5,
         Pm=0.01
     )
