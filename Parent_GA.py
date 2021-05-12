@@ -115,7 +115,7 @@ class Parent_GA():
         pop = self.initPop()
         pop_fit = self.evaluatePop(pop)
         mean_outputs = [sum(pop_fit)/len(pop_fit)]
-        best_outputs = [max(pop_fit)]
+        best_outputs = [min(pop_fit)]
         for i in range(self.NUM_ITERATION):
             print("#################################")
             for p, f in zip(pop, pop_fit):
