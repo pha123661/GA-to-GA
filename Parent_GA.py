@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import numpy as np
 import multiprocessing as mp
 import random
 from Child_GA_TSP import Child_GA
