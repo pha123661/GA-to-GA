@@ -56,15 +56,14 @@ class Parent_GA():
 
     def selection(self, p, p_fit):
         '''
-        TODO: Rank selection
+        Rank selection
         '''
         a = []
+        sorted_p = [x for _, x in sorted(zip(p_fit, p))]
+        weights = list(range(1, len(sorted_p)+1))
         for _ in range(self.NUM_PARENT):
-            [j, k] = np.random.choice(self.NUM_CHROME, 2, replace=False)
-            if p_fit[j] > p_fit[k]:
-                a.append(p[j])
-            else:
-                a.append(p[k])
+            parent = random.choices(sorted_p, weights=weights)
+            a.append(parent)
         return a
 
     def TF(self, name):
@@ -106,7 +105,7 @@ class Parent_GA():
         b = p + a
         b_fit = p_fit + a_fit
         ret_fit, ret = [], []
-        for t, tt in sorted(zip(b_fit, b)):
+        for t, tt in sorted(zip(b_fit, b), reverse=True):
             ret_fit.append(t)
             ret.append(tt)
         return ret[:self.NUM_CHROME], ret_fit[:self.NUM_CHROME]
@@ -117,7 +116,9 @@ class Parent_GA():
         mean_outputs = [sum(pop_fit)/len(pop_fit)]
         best_outputs = [1/max(pop_fit)]
         for i in range(self.NUM_ITERATION):
-            print(pop)
+            print("#################################")
+            for p in pop:
+                print(p)
             parent = self.selection(pop, pop_fit)
             offspring = self.crossover(parent)
             self.mutation(offspring)
