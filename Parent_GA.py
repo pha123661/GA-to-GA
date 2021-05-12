@@ -52,7 +52,7 @@ class Parent_GA():
         return fit_value
 
     def evaluatePop(self, P):
-        with mp.Pool(mp.cpu_count()) as pool:
+        with mp.Pool(min(mp.cpu_count(), self.NUM_CHROME)) as pool:
             return pool.map(self.fitFunc, P)
 
     def selection(self, p, p_fit):
