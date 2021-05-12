@@ -62,16 +62,16 @@ class Parent_GA():
         sorted_p = [x for _, x in sorted(zip(p_fit, p))]
         weights = list(range(1, len(sorted_p)+1))
         for _ in range(self.NUM_PARENT):
-            parent = random.choices(sorted_p, weights=weights)
+            parent = random.choices(sorted_p, weights=weights)[0]
             a.append(parent)
         return a
 
     def TF(self, name):
         # name = Pc or Pm
         if name == "Pc":
-            return random.choices([True, False], weights=[self.Pc, 1-self.Pc])
+            return random.choices([True, False], weights=[self.Pc, 1-self.Pc])[0]
         elif name == "Pm":
-            return random.choices([True, False], weights=[self.Pm, 1-self.Pm])
+            return random.choices([True, False], weights=[self.Pm, 1-self.Pm])[0]
         else:
             raise IndexError(name, "not found")
 
@@ -113,12 +113,12 @@ class Parent_GA():
     def Eval(self, plot=False, return_fit=False):
         pop = self.initPop()
         pop_fit = self.evaluatePop(pop)
-        mean_outputs = [sum(pop_fit)/len(pop_fit)]
-        best_outputs = [1/max(pop_fit)]
+        mean_outputs = [int(1/(sum(pop_fit)/len(pop_fit)))]
+        best_outputs = [int(1/max(pop_fit))]
         for i in range(self.NUM_ITERATION):
             print("#################################")
-            for p in pop:
-                print(p)
+            for p, f in zip(pop, pop_fit):
+                print(p, "  fit: ", int(1/f))
             parent = self.selection(pop, pop_fit)
             offspring = self.crossover(parent)
             self.mutation(offspring)
@@ -129,9 +129,9 @@ class Parent_GA():
             print("iteration:", i,
                   "Pc: %s, Pm: %s, NUM_CHROME: %s" % (
                       pop[0][0], pop[0][1], pop[0][2]),
-                  "Average iteration: ", int(1/pop_fit[0]))
-            mean_outputs.append(sum(pop_fit)/len(pop_fit))
-            best_outputs.append(1/max(pop_fit))
+                  "Best average iteration: ", int(1/pop_fit[0]))
+            mean_outputs.append(int(1/(sum(pop_fit)/len(pop_fit))))
+            best_outputs.append(int(1/max(pop_fit)))
         if plot:
             outputs = [mean_outputs, best_outputs]
             self.plot(outputs)
@@ -151,6 +151,6 @@ if __name__ == "__main__":
         NUM_ITERATION=10,
         NUM_CHROME=12,
         Pc=0.5,
-        Pm=0.01
+        Pm=1
     )
     a.Eval(plot=True)
