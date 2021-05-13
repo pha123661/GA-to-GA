@@ -8,7 +8,7 @@ from load_tsp import LoadTsp
 class Parent_GA():
     def __init__(self, NUM_ITERATION=10, NUM_CHROME=20, Pc=0.5, Pm=0.01):
         '''
-        Field of chromosome
+        Field of chromosome (Value encoding)
         [Pc, Pm, NUM_CHROME]
         '''
         self.NUM_ITERATION = NUM_ITERATION
@@ -110,39 +110,35 @@ class Parent_GA():
             ret.append(tt)
         return ret[:self.NUM_CHROME], ret_fit[:self.NUM_CHROME]
 
-    def Eval(self, plot=False, return_fit=False):
+    def Eval(self, plot=True, return_fit=False):
         pop = self.initPop()
         pop_fit = self.evaluatePop(pop)
         mean_outputs = [sum(pop_fit)/len(pop_fit)]
         best_outputs = [min(pop_fit)]
         for i in range(self.NUM_ITERATION):
-            print("#################################")
-            for p, f in zip(pop, pop_fit):
-                print(p, "  fit: ", f)
             parent = self.selection(pop, pop_fit)
             offspring = self.crossover(parent)
             self.mutation(offspring)
             offspring_fit = self.evaluatePop(offspring)
             pop, pop_fit = self.replace(
                 pop, pop_fit, offspring, offspring_fit)
-
-            print("iteration:", i,
+            print("############# Iteration: ", i+1, "#############")
+            for p, f in zip(pop, pop_fit):
+                print(p, "  fit: ", f)
+            print("Best one:\n"
                   "Pc: %s, Pm: %s, NUM_CHROME: %s" % tuple(pop[0]),
-                  "Best average iteration: ", pop_fit[0])
+                  "fit: ", pop_fit[0])
             mean_outputs.append(sum(pop_fit)/len(pop_fit))
             best_outputs.append(min(pop_fit))
         if plot:
-            outputs = [mean_outputs, best_outputs]
-            self.plot(outputs)
+            plt.plot(mean_outputs)
+            plt.plot(best_outputs)
+            plt.legend(["mean", "best"])
+            plt.xlabel("Iteration")
+            plt.ylabel("Fitness")
+            plt.show()
         if return_fit:
             pop_fit[0]
-
-    def plot(self, outputs):
-        for output in outputs:
-            plt.plot(output)
-        plt.xlabel("Average iteration for every map")
-        plt.ylabel("Fitness")
-        plt.show()
 
 
 if __name__ == "__main__":
