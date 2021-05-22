@@ -96,11 +96,11 @@ class Parent_GA():
         for ch in p:
             if self.TF("Pm"):
                 k = random.randrange(self.NUM_BIT)
-                if k == 0:   # Pc
+                if k == 0:   # Initialize Pc
                     ch[k] = random.uniform(*self.Pc_range)
-                elif k == 1:  # Pm
+                elif k == 1:  # Initialize Pm
                     ch[k] = random.uniform(*self.Pm_range)
-                elif k == 2:  # NUM_CHROME
+                elif k == 2:  # Initialize NUM_CHROME
                     ch[k] = random.randint(*self.Chrome_range)
                 else:
                     raise IndexError("Wrong mutation!")
