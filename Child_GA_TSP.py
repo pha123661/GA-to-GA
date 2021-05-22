@@ -111,7 +111,7 @@ def Child_GA(Pc, Pm, NUM_CHROME, TSP_graph):
         offspring_fit = evaluatePop(offspring)
         pop, pop_fit = replace(pop, pop_fit, offspring, offspring_fit)
         mean = -1 * np.average(pop_fit)
-        if mean - memory.get() == 0:
+        if mean == memory.get():
             return i
         memory.add(mean)
 
