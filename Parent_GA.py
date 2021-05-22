@@ -50,7 +50,7 @@ class Parent_GA():
         return fit_value
 
     def evaluatePop(self, P):
-        with mp.Pool(min(mp.cpu_count(), self.NUM_CHROME)) as pool:
+        with mp.Pool(mp.cpu_count()) as pool:
             return pool.map(self.fitFunc, P)
 
     def selection(self, p, p_fit):
@@ -91,7 +91,7 @@ class Parent_GA():
     def mutation(self, p):
         '''
         Uniform mutation: 
-        randomly choose one gene and initialize it
+        randomly choose one genome and initialize it
         '''
         for ch in p:
             if self.TF("Pm"):
