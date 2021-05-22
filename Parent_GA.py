@@ -90,7 +90,8 @@ class Parent_GA():
 
     def mutation(self, p):
         '''
-        uniform mutation: randomly choose one gene and initialize it
+        Uniform mutation: 
+        randomly choose one gene and initialize it
         '''
         for ch in p:
             if self.TF("Pm"):
