@@ -47,7 +47,6 @@ class Parent_GA():
             sum_ += float(Child_GA(Pc=Pc, Pm=Pm,
                                    NUM_CHROME=chrome, TSP_graph=graph))
         fit_value = sum_ / len(self.TSP_maps)
-        # fit_value = random.randint(1, 200)
         return fit_value
 
     def evaluatePop(self, P):
@@ -67,7 +66,9 @@ class Parent_GA():
         return a
 
     def TF(self, name):
-        # name = Pc or Pm
+        '''
+        Returns True of False with given weight
+        '''
         if name == "Pc":
             return random.choices([True, False], weights=[self.Pc, 1-self.Pc])[0]
         elif name == "Pm":
@@ -88,7 +89,9 @@ class Parent_GA():
         return a
 
     def mutation(self, p):
-        # uniform mutation: randomly choose one gene and initialize it
+        '''
+        uniform mutation: randomly choose one gene and initialize it
+        '''
         for ch in p:
             if self.TF("Pm"):
                 k = random.randrange(self.NUM_BIT)
