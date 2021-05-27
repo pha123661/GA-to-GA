@@ -147,9 +147,9 @@ class Parent_GA():
 
 if __name__ == "__main__":
     a = Parent_GA(
-        NUM_ITERATION=10,
+        NUM_ITERATION=20,
         NUM_CHROME=12,
         Pc=0.8,
-        Pm=0.01
+        Pm=0.1
     )
     a.Eval(plot=True)
