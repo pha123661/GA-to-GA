@@ -2,7 +2,7 @@
 Final project for Genetic Algorithm and Applications in Management Science @ NYCU
 
 # Usage:
-$ python Parent_GA.py
+```$ python Parent_GA.py```
 
 # File Description:
 ## Parent_GA.py:
