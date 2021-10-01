@@ -1,4 +1,4 @@
-# NYCU-2021Fall-Genetic_Algorithms
+# NYCU-2021Spring-Genetic_Algorithms
 Final project for Genetic Algorithm and Applications in Management Science @ NYCU
 
 # Usage:
