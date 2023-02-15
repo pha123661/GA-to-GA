@@ -25,3 +25,11 @@ A TSP solver using genetic algorithm, wrapped with a configurable hyperparameter
 ### load_tsp.py
 
 Utility for loading TSP maps. TSP maps are from TSPLIB dataset.
+
+### Report.pdf
+
+A Chinese report including methodology and experiment results.
+
+### Slide.pdf
+
+A 10-minute presentation slide.
