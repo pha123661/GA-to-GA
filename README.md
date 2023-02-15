@@ -1,15 +1,27 @@
-# NYCU-2021Spring-Genetic_Algorithms
-Final project for Genetic Algorithm and Applications in Management Science @ NYCU
+# GA to GA
 
-# Usage:
-```$ python Parent_GA.py```
+A meta-learning paradigm that applies genetic algorithms to genetic algorithms
 
-# File Description:
-## Parent_GA.py:
+The "child" GA solves TSP from the TSPLIB dataset in this case, but it can also solve any other problem.
+
+Team of three: SW Li, PY Tsai, YS Liao
+
+## Usage
+
+```bash
+python Parent_GA.py
+```
+
+## File Description
+
+### Parent_GA.py
+
 A parameter optimizer for Child_GA_TSP.py using genetic algorithm
 
-## Child_GA_TSP.py:
+### Child_GA_TSP.py
+
 A TSP solver using genetic algorithm, wrapped with a configurable hyperparameter setting.
 
-## load_tsp.py:
+### load_tsp.py
+
 Utility for loading TSP maps. TSP maps are from TSPLIB dataset.
